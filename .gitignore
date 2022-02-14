@@ -276,3 +276,4 @@ vatglobal_test/media/
 .env
 .envs/*
 !.envs/.local/
+.vscode
