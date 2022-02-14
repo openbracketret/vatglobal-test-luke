@@ -7,6 +7,11 @@ from django.views.generic import TemplateView
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework.authtoken.views import obtain_auth_token
 
+# NOTE: I have just done the URL routing here since two endpoints is not that much of a problem for this test case
+# Usually I would use the provided "api/" router but for the sake of simplicity I have done it here.
+
+from fileproc.views import ProccessView
+
 urlpatterns = [
     path("", TemplateView.as_view(template_name="pages/home.html"), name="home"),
     path(
@@ -18,6 +23,7 @@ urlpatterns = [
     path("users/", include("vatglobal_test.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
+    path("processFile", ProccessView.as_view()),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # API URLS
