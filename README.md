@@ -11,23 +11,32 @@ The test assignment for VATGlobal
 -   The easiest way to run the system is to use docker. In order for that to work you will need to have Docker installed as well as docker-compose.
 
 -   To build the stack you will want to run the following command:
+
         $ docker-compose -f local.yml build
 
 -   To run the stack you will want to run:
+
         $ docker-compose -f local.yml up
 
 -   You can also specify the compose file locally by doing:
+
         $ export COMPOSE_FILE=local.yml
+
     This will then allow you to run:
+
         $ docker-compose up
+
     And if you wish to run in detached mode you can use
+
         $ docker-compose up -d
 
 -   Building and running the stack **should** automatically run the migrations on the database. If for some reason it does not you can execute the following to apply migrations:
-        $ docker-compose -f local.yml run --rm django python manage.py migrate
-    And then to create your super user you can use:
-        $ docker-compose -f local.yml run --rm django python manage.py createsuperuser
 
+        $ docker-compose -f local.yml run --rm django python manage.py migrate
+
+    And then to create your super user you can use:
+
+        $ docker-compose -f local.yml run --rm django python manage.py createsuperuser
 
 
 ### Setting Up Your Users
