@@ -81,3 +81,9 @@ Moved to [Live reloading and SASS compilation](http://cookiecutter-django.readth
 
 ### Being "cheap" on the provided API
 In order to make sure that I was as cheap as possible with the provided API, I made a database entry that contained the from and to currency converstions that I would need. I then would be able to reuse those values for the next 30 minutes (I chose this in the case of long operations), after the 30 minutes had expired I would delete the entry and if I ever needed that converstion again I would simply do another lookup on the API for the conversion rate.
+
+### Cookiecutter
+In order to speed up the process of me starting the task and getting environments etc that were easy to use I used cookiecutter-django to build the project initially. This way I am given access by default to almost anything that I need. As per the specification I made sure to upgrade the version of Django that I am using (to 4.0.2).
+
+### Shoddy testing
+I have tried my best to test as much as I can and as best I can. Testing is the only thing that is my downfall because my exposure to testing and proper testing is not very vast.
