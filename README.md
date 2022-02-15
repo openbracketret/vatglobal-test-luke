@@ -38,6 +38,12 @@ The test assignment for VATGlobal
 
         $ docker-compose -f local.yml run --rm django python manage.py createsuperuser
 
+### Running tests with docker
+
+-   Running tests using docker is as simple as the previous commands:
+
+        $ docker-compose -f local.yml run --rm django pytest
+
 
 ### Setting Up Your Users
 
@@ -71,10 +77,7 @@ To run the tests, check your test coverage, and generate an HTML coverage report
 
 Moved to [Live reloading and SASS compilation](http://cookiecutter-django.readthedocs.io/en/latest/live-reloading-and-sass-compilation.html).
 
-## Deployment
+## Some Considerations
 
-The following details how to deploy this application.
-
-### Docker
-
-See detailed [cookiecutter-django Docker documentation](http://cookiecutter-django.readthedocs.io/en/latest/deployment-with-docker.html).
+### Being "cheap" on the provided API
+In order to make sure that I was as cheap as possible with the provided API, I made a database entry that contained the from and to currency converstions that I would need. I then would be able to reuse those values for the next 30 minutes (I chose this in the case of long operations), after the 30 minutes had expired I would delete the entry and if I ever needed that converstion again I would simply do another lookup on the API for the conversion rate.
