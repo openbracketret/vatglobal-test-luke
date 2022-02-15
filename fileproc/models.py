@@ -41,7 +41,7 @@ class Records(models.Model):
 
     date = models.DateTimeField()
     type = models.CharField(max_length=12, choices=TYPE_CHOICES)
-    country = models.ForeignKey(Country, on_delete=models.CASCADE, related_name="records_country")
-    currency = models.ForeignKey(Country, on_delete=models.CASCADE, related_name="records_currency") # NOTE: This is a bit of a weird one that was inadvertantly created due to my Country table.
+    country = models.ForeignKey(Country, on_delete=models.CASCADE, related_name="records_country", blank=True, null=True)
+    currency = models.ForeignKey(Country, on_delete=models.CASCADE, related_name="records_currency", blank=True, null=True) # NOTE: This is a bit of a weird one that was inadvertantly created due to my Country table.
     net = models.DecimalField(decimal_places=2, max_digits=16)
     vat = models.DecimalField(decimal_places=2, max_digits=16)
