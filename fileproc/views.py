@@ -81,9 +81,7 @@ class ProccessView(APIView):
 
         print(df.dtypes)
 
-        # Records.objects.bulk_create(
-        #     Records(**vals) for vals in df.to_dict('records')
-        # )
+        # NOTE: This seems to be the fastest way to mass create entries inside of the database table
 
         database_info = settings.DATABASES['default']
 
