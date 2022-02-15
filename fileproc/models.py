@@ -25,6 +25,7 @@ class ExchangeRateHolder(models.Model):
     to = models.ForeignKey(Country, on_delete=models.CASCADE, related_name="exchange_to")
     created = models.DateTimeField(auto_now_add=True)
 
+# NOTE: I know about the automatic pluralisation here, just made a typo
 class Records(models.Model):
     """
     Table to store the actual records that are needed in the task
