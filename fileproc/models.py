@@ -14,7 +14,8 @@ class Country(models.Model):
     currency_code = models.CharField(max_length=8)
     alpha_code = models.CharField(max_length=8)
 
-
+    def __str__(self):
+        return f"{self.name}: {self.alpha_code}"
 class ExchangeRateHolder(models.Model):
     """
     Table used to temoporarily store the exchange rates for specific countries
@@ -45,3 +46,6 @@ class Records(models.Model):
     currency = models.ForeignKey(Country, on_delete=models.CASCADE, related_name="records_currency", blank=True, null=True) # NOTE: This is a bit of a weird one that was inadvertantly created due to my Country table.
     net = models.DecimalField(decimal_places=2, max_digits=16)
     vat = models.DecimalField(decimal_places=2, max_digits=16)
+
+    def __str__(self):
+        return f"{self.type}: {self.date} - {self.net}"

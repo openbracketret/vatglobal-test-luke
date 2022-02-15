@@ -7,6 +7,7 @@ redis==4.1.3  # https://github.com/redis/redis-py
 hiredis==2.0.0  # https://github.com/redis/hiredis-py
 
 pandas
+sqlalchemy
 
 # Django
 # ------------------------------------------------------------------------------

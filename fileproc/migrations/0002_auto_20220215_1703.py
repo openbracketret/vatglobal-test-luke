@@ -66,6 +66,12 @@ def preload_countries_and_currencies(apps, schema_editor):
     for item in json_list:
         Country.objects.get_or_create(**item)
 
+    Country.objects.create(
+        name="NONE",
+        alpha_code="NONE",
+        currency_code="NONE",
+    )
+
 
 class Migration(migrations.Migration):
 
