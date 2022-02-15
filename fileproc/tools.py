@@ -61,6 +61,9 @@ def country_id_column_selector(row):
     country_id (int): The country id
     """
 
+    if len(row) < 1:
+        return Country.objects.get(name="NONE").id
+
     try:
         country = Country.objects.filter(
             Q(name__icontains=row) |
@@ -83,6 +86,9 @@ def currency_id_column_selector(row):
     ------
     country_id (int): The id of the country with the related currency
     """
+
+    if len(row) < 1:
+        return Country.objects.get(name="NONE").id
 
     try:
         country = Country.objects.filter(
