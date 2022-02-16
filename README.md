@@ -18,11 +18,11 @@ The test assignment for VATGlobal
 
         $ docker-compose -f local.yml up
 
--   You can also specify the compose file locally by doing:
+-   Optionally you can also specify the compose file locally by doing:
 
         $ export COMPOSE_FILE=local.yml
 
-    This will then allow you to run:
+    This will then allow you to run (NOTE: you no longer have the "-f" flag):
 
         $ docker-compose up
 
@@ -55,29 +55,72 @@ The test assignment for VATGlobal
 
 For convenience, you can keep your normal user logged in on Chrome and your superuser logged in on Firefox (or similar), so that you can see how the site behaves for both kinds of users.
 
-### Type checks
+### Getting up and running without Docker
+-   I do not recommend this method but it is completely possible to do this without Docker. I am going to assume that you have python 3.9 installed as well as PostgreSQL 12 or higher. Firstly you want to create a virtual environment that will be used to store all the packages that the project requires.
 
-Running type checks with mypy:
+        $ python3.9 -m venv <path>
+    
+-   Then you want to activate it by running the following:
 
-    $ mypy vatglobal_test
+        $ source <path>/bin/activate
 
-### Test coverage
+-   Now you will want to install all of the required packages
 
-To run the tests, check your test coverage, and generate an HTML coverage report:
+        $ pip install -r requirements/local.txt
 
-    $ coverage run -m pytest
-    $ coverage html
-    $ open htmlcov/index.html
+-   Next we want to create the database for the project:
 
-#### Running tests with pytest
+        $ createdb vatglobal_test -U postgres --password <password>
 
-    $ pytest
+-   Set environment variables for running:
 
-### Live reloading and Sass CSS compilation
+        $ export DATABASE_URL=postgres://postgres:<password>@127.0.0.1:5432/vatglobal_test
+        $ export USE_DOCKER=no
 
-Moved to [Live reloading and SASS compilation](http://cookiecutter-django.readthedocs.io/en/latest/live-reloading-and-sass-compilation.html).
+-   Apply migrations:
 
+        $ python manage.py migrate
+
+-   Create a user:
+
+        $ python manage.py createsuperuser
+
+-   Run the server:
+
+        $ python manage.py runserver
+
+-   Run tests with:
+
+        $ pytest
+
+## Available endpoints and their params
+All endpoints except the token retrieval endpoint require the **"Authorization"** header in the form **Token <token>**
+### /auth-token/
+This is a POST request with the following:
+
+        username: <username>
+        password: <password>
+
+This will return the token for the related user.
+### /processFile/
+This is a POST request with the following:
+
+        file: <file>
+
+Where file is the file that you want to uploade and process, the endpoint expects a csv file
+
+### /retrieveRows/
+This is a GET request with the following params: (* = optional)
+
+        country: <string>
+        date: <string in format YYYY/MM/DD>
+        *currency: <string>
+
+This will return all rows inside of the database that match the specified paramaters. If currency is passed in it will handle changing the currencies with their related exchange rates
 ## Some Considerations
+
+### The NONE country approach
+In order to mitigate the effects of my poorly found csv's that are preloaded into the database in order to store a list of countries and their alpha codes and their currency codes I have manually created a "NONE" country which is close to the approach that Google takes with their "null island" on Google Maps.
 
 ### Being "cheap" on the provided API
 In order to make sure that I was as cheap as possible with the provided API, I made a database entry that contained the from and to currency converstions that I would need. I then would be able to reuse those values for the next 30 minutes (I chose this in the case of long operations), after the 30 minutes had expired I would delete the entry and if I ever needed that converstion again I would simply do another lookup on the API for the conversion rate.
