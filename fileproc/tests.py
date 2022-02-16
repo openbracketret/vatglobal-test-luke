@@ -1,6 +1,8 @@
 import pytest
 from django.test import TestCase
 
+import datetime
+
 # Create your tests here.
 from fileproc.tools import (
     check_date_column_formatting,
@@ -10,6 +12,8 @@ from fileproc.tools import (
 )
 
 from fileproc.models import Records, Country
+
+from fileproc.exchange_engine import ExchangeRateManager, ExchangeRateAPI, ExchangeRateHolder
 
 pytestmark = pytest.mark.django_db
 
@@ -53,3 +57,38 @@ class TestTools:
         assert country_id > 0
         country_id = country_id_column_selector("")
         assert Country.objects.get(id=country_id).name == "NONE"
+
+class TestEngine:
+    """
+    Testing class for files inside of exchange_engine
+    """
+
+    def test_get_conversion_rate(self):
+        engine = ExchangeRateAPI()
+        assert type(engine.get_conversion_rate("ZAR", "GBP")) == float
+
+    def test_manager_clear(self):
+        country_one = Country.objects.get(name="NONE")
+        date = datetime.datetime.now() - datetime.timedelta(minutes=40)
+        ExchangeRateHolder.objects.create(
+            begin=country_one,
+            to=country_one,
+            rate=1.0,
+            created=date
+        )
+        assert ExchangeRateHolder.objects.count() == 1
+        engine = ExchangeRateManager(None)
+        assert ExchangeRateHolder.objects.count() == 0
+
+    # def test_manager_collections(self):
+    #     from_codes=['ZAR', 'GBP']
+    #     to = 'AFG'
+    #     engine = ExchangeRateManager(None)
+    #     test = engine.__collect_needed_exchange_rates(to, from_codes)
+    #     assert isinstance(test, ExchangeRateHolder)
+
+    """
+    TODO:
+        I need to add more tests to test the managers as well as tests for the
+        views for the API
+    """
