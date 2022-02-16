@@ -131,8 +131,6 @@ class ProccessView(APIView):
         #         net=net,
         #         vat=vat
         #     )
-            
-
 
         return Response({"success": True})
 
@@ -154,5 +152,35 @@ class RetrieveView(APIView):
         date (string): The date of the record to be retrieved in YYYY/MM/DD format
         *currency (string): A currency code to convert the values to in ISO 4217 format
         """
-        
+
+        if not request.GET.get('country', None) or not request.GET.get('date', None):
+            return Response({
+                "success": False,
+                "message": "Please provide both a country and a date"
+            }, status=400)
+
+        # Check that we have the country that is being requested
+        try:
+            # NOTE: Due to the horrible way in which I put the country stuff in the DB I have to 
+            # use this horrible method for retrieving the country
+            country = Country.objects.get(alpha_code__icontains=request.GET.get('country'))
+        except Country.DoesNotExist:
+            return Response({
+                "success": False,
+                "message": "The provided country does not exist. You can also try: NONE"
+            }, status=400)
+
+        # Check that the date is in the correct format
+        try:
+            date = datetime.datetime.strptime(request.GET.get('date'), "%Y/%m/%d")
+        except Exception as e:
+            print(e)
+            return Response({
+                "success": False,
+                "message": "The date provided does not match the requested format: YYYY/MM/DD"
+            }, status=400)
+
+
+
+
         return Response("hedge")
