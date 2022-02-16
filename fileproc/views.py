@@ -136,3 +136,23 @@ class ProccessView(APIView):
 
         return Response({"success": True})
 
+class RetrieveView(APIView):
+    """
+    APIView class used to retrieve records from the database.
+
+    GET
+    ---------
+    Retrieve records based on passed in parameters
+    params: country, date, currency
+    """
+
+    def get(self, request, format=None):
+        """
+        Params
+        -------
+        country (string): The country to be retrieved from in ISO 3166 format
+        date (string): The date of the record to be retrieved in YYYY/MM/DD format
+        *currency (string): A currency code to convert the values to in ISO 4217 format
+        """
+        
+        return Response("hedge")
