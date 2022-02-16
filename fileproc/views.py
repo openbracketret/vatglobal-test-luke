@@ -20,6 +20,7 @@ from fileproc.tools import (
 )
 from fileproc.exchange_engine import ExchangeRateManager
 from fileproc.models import Country, Records, ExchangeRateHolder
+from fileproc.serializers import RecordSerializer
 # Create your views here.
 
 class ProccessView(APIView):
@@ -198,4 +199,6 @@ class RetrieveView(APIView):
             currency_manager = ExchangeRateManager(records)
             return Response(currency_manager.process_exchange_rate(currency_code))
 
-        return Response("hedge")
+        serializer = RecordSerializer(records, many=True)
+
+        return Response(serializer.data)
