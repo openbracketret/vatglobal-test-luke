@@ -24,6 +24,7 @@ class ExchangeRateHolder(models.Model):
 
     begin = models.ForeignKey(Country, on_delete=models.CASCADE, related_name="exchange_from")
     to = models.ForeignKey(Country, on_delete=models.CASCADE, related_name="exchange_to")
+    rate = models.DecimalField(max_digits=20,decimal_places=16)
     created = models.DateTimeField(auto_now_add=True)
 
 # NOTE: I know about the automatic pluralisation here, just made a typo
