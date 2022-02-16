@@ -18,6 +18,7 @@ from fileproc.tools import (
     country_id_column_selector,
     currency_id_column_selector
 )
+from fileproc.exchange_engine import ExchangeRateManager
 from fileproc.models import Country, Records, ExchangeRateHolder
 # Create your views here.
 
@@ -174,13 +175,27 @@ class RetrieveView(APIView):
         try:
             date = datetime.datetime.strptime(request.GET.get('date'), "%Y/%m/%d")
         except Exception as e:
-            print(e)
             return Response({
                 "success": False,
                 "message": "The date provided does not match the requested format: YYYY/MM/DD"
             }, status=400)
 
+        records = Records.objects.filter(
+            country=country,
+            date=date
+        )
 
-
+        # The case that the currency code is provided
+        if currency_code := request.GET.get('currency', None):
+            try:
+                Country.objects.get(currency_code=currency_code)
+            except Country.DoesNotExist:
+                return Response({
+                    "success": False,
+                    "message": "The currency code does not exist"
+                }, status=400)
+            
+            currency_manager = ExchangeRateManager(records)
+            return Response(currency_manager.process_exchange_rate(currency_code))
 
         return Response("hedge")

@@ -71,7 +71,10 @@ class ExchangeRateManager():
         # Now we need to know of the set of possibilities for convertions
         record_currencies = list(set([x.currency.currency_code for x in self.records]))
         # Now delete my NONE country
-        record_currencies.remove("NONE")
+        try:
+            record_currencies.remove("NONE")
+        except ValueError:
+            pass
 
         # Now we need to collect the records for ExchangeRateHolder
         exchange_rates = self.__collect_needed_exchange_rates(currency_code, record_currencies)
@@ -82,16 +85,18 @@ class ExchangeRateManager():
         for item in exchange_rates:
             rate_map[item.begin.currency_code] = item.rate
 
-        returner = self.records.values()
-        for item in returner:
+        returner = list()
+        for item in self.records.values():
+            
+            returner.append({
+                "date": item["date"],
+                "type": item["type"],
+                "country": Country.objects.get(id=item["country_id"]).name,
+                "currency": Country.objects.get(id=item["country_id"]).currency_code,
+                "net": item["net"] * rate_map[Country.objects.get(id=item["currency_id"]).currency_code],
+                "vat": item["vat"] * rate_map[Country.objects.get(id=item["currency_id"]).currency_code]
+            })
 
-            # Set the country to be the actual name of the country instead of just the id
-            item["country_id"] = Country.objects.get(id=item["country_id"]).name
-            # Currency will always be the requested currency now?
-            item["currency_id"] = Country.objects.get(id=item["country_id"]).currency_code
-
-            item["net"] = item["net"] * rate_map[item["currency_id"]]
-            item["vat"] = item["vat"] * rate_map[item["currency_id"]]
 
         return returner
 
@@ -140,8 +145,8 @@ class ExchangeRateManager():
             rate = api.get_conversion_rate(code, currency_code_to)
 
             ExchangeRateHolder.objects.create(
-                begin=Country.objects.get(currency_code=code),
-                to=Country.objects.get(currency_code=currency_code_to),
+                begin=Country.objects.filter(currency_code=code)[0],
+                to=Country.objects.filter(currency_code=currency_code_to)[0],
                 rate=rate
             )
 
