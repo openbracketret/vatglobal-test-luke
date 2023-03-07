@@ -160,6 +160,8 @@ class RetrieveView(APIView):
                 "success": False,
                 "message": "Please provide both a country and a date"
             }, status=400)
+        
+        # Make some changes
 
         # Check that we have the country that is being requested
         try:
